@@ -76,9 +76,10 @@ public class BeerServiceImpl implements BeerService {
     @Override
     public Beer saveNewBeer(Beer beer) {
 
-        // mimicking DB op (persistance)
+        // mimicking DB op (persistence)
         Beer savedBeer = Beer.builder()
                 .id(UUID.randomUUID())
+                .version(1)
                 .createdDate(LocalDateTime.now())
                 .updateDate(LocalDateTime.now())
                 .beerName(beer.getBeerName())
