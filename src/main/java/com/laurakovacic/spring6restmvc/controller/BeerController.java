@@ -27,6 +27,14 @@ public class BeerController {
         return new ResponseEntity(HttpStatus.NO_CONTENT);   // meaning request is received and everything happened normally
     }
 
+    @DeleteMapping("{beerId}")
+    public ResponseEntity deleteById(@PathVariable("beerId") UUID beerId){
+
+        beerService.deleteBeerById(beerId);
+
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+
     @PostMapping
 //    @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity handlePost(@RequestBody Beer beer) {  // @RequestBody tells Spring to bind JSON body to Beer object
