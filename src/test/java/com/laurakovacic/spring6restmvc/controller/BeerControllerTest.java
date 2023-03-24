@@ -1,6 +1,5 @@
 package com.laurakovacic.spring6restmvc.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.laurakovacic.spring6restmvc.model.Beer;
 import com.laurakovacic.spring6restmvc.services.BeerService;
