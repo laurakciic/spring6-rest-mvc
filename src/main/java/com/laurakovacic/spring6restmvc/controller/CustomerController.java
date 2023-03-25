@@ -13,11 +13,12 @@ import java.util.UUID;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/customer")
 public class CustomerController {
+    public static final String CUSTOMER_PATH = "/api/v1/customer";
+    public static final String CUSTOMER_PATH_ID = CUSTOMER_PATH + "/{customerId}";
     private final CustomerService customerService;
 
-    @PutMapping("{customerId}")     // limits the method to responding to HTTP PUT requests only
+    @PutMapping(CUSTOMER_PATH_ID)     // limits the method to responding to HTTP PUT requests only
     public ResponseEntity updateById(@PathVariable("customerId") UUID customerId, @RequestBody Customer customer){
 
         customerService.updateCustomerById(customerId, customer);
@@ -25,7 +26,7 @@ public class CustomerController {
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping("{customerId}")
+    @DeleteMapping(CUSTOMER_PATH_ID)
     public ResponseEntity deleteById(@PathVariable("customerId") UUID customerId) {
 
         customerService.deleteCustomerById(customerId);
@@ -33,7 +34,7 @@ public class CustomerController {
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
-    @PostMapping
+    @PostMapping(CUSTOMER_PATH)
     public ResponseEntity handlePost(@RequestBody Customer customer) {      // @RequestBody - parsing JSON body to Customer object
 
         Customer savedCustomer = customerService.saveNewCustomer(customer);
@@ -44,7 +45,7 @@ public class CustomerController {
         return new ResponseEntity(headers, HttpStatus.CREATED);
     }
 
-    @PatchMapping("{customerId}")
+    @PatchMapping(CUSTOMER_PATH_ID)
     public ResponseEntity patchCustomerById(@PathVariable("customerId") UUID customerId, @RequestBody Customer customer){
 
         customerService.patchCustomerById(customerId, customer);
@@ -52,12 +53,12 @@ public class CustomerController {
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping(CUSTOMER_PATH)
     public List<Customer> listAllCustomers() {
         return customerService.listCustomers();
     }
 
-    @RequestMapping("/{customerId}")
+    @GetMapping(CUSTOMER_PATH_ID)
     public Customer getCustomerById(@PathVariable("customerId") UUID id) {
         return customerService.getCustomerById(id);
     }

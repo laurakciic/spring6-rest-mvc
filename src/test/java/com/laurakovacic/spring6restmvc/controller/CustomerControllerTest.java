@@ -1,6 +1,5 @@
 package com.laurakovacic.spring6restmvc.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.laurakovacic.spring6restmvc.model.Customer;
 import com.laurakovacic.spring6restmvc.services.CustomerService;
@@ -19,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.laurakovacic.spring6restmvc.controller.CustomerController.CUSTOMER_PATH;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
@@ -60,7 +60,7 @@ class CustomerControllerTest {
 
         given(customerService.saveNewCustomer(any(Customer.class))).willReturn(customerServiceImpl.listCustomers().get(1));
 
-        mockMvc.perform(post("/api/v1/customer")
+        mockMvc.perform(post(CUSTOMER_PATH)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(customer)))
                 .andExpect(status().isCreated())
@@ -71,7 +71,7 @@ class CustomerControllerTest {
     void updateCustomer() throws Exception {
         Customer customer = customerServiceImpl.listCustomers().get(0);
 
-        mockMvc.perform(put("/api/v1/customer/" + customer.getId())
+        mockMvc.perform(put(CUSTOMER_PATH + "/" + customer.getId())
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(customer)))
@@ -85,7 +85,7 @@ class CustomerControllerTest {
     void deleteCustomer() throws Exception {
         Customer customer = customerServiceImpl.listCustomers().get(0);
 
-        mockMvc.perform(delete("/api/v1/customer/" + customer.getId())
+        mockMvc.perform(delete(CUSTOMER_PATH + "/" + customer.getId())
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
 
@@ -100,7 +100,7 @@ class CustomerControllerTest {
         Map<String, Object> customerMap = new HashMap<>();
         customerMap.put("name", "New name");
 
-        mockMvc.perform(patch("/api/v1/customer/" + customer.getId())
+        mockMvc.perform(patch(CUSTOMER_PATH + "/" + customer.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(customerMap)))
@@ -116,7 +116,7 @@ class CustomerControllerTest {
     void listAllCustomers() throws Exception {
         given(customerService.listCustomers()).willReturn(customerServiceImpl.listCustomers());
 
-        mockMvc.perform(get("/api/v1/customer")
+        mockMvc.perform(get(CUSTOMER_PATH)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -129,7 +129,7 @@ class CustomerControllerTest {
 
         given(customerService.getCustomerById(testCustomer.getId())).willReturn(testCustomer);
 
-        mockMvc.perform(get("/api/v1/customer/" + testCustomer.getId())
+        mockMvc.perform(get(CUSTOMER_PATH + "/" + testCustomer.getId())
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
