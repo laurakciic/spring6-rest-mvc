@@ -6,6 +6,7 @@ import com.laurakovacic.spring6restmvc.services.BeerService;
 import com.laurakovacic.spring6restmvc.services.BeerServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -14,6 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.UUID;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -66,6 +68,20 @@ class BeerControllerTest {
                 .andExpect(status().isNoContent());   // converting beer POJO to a JSON representation
 
         verify(beerService).updateBeerById(any(UUID.class), any(Beer.class));   // verifies method was called with given parameters
+    }
+
+    @Test
+    void deleteBeer() throws Exception {
+        Beer beer = beerServiceImpl.listBeers().get(0);
+
+        mockMvc.perform(delete("/api/v1/beer/" + beer.getId())
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+
+        ArgumentCaptor<UUID> uuidArgumentCaptor = ArgumentCaptor.forClass(UUID.class);
+        verify(beerService).deleteBeerById(uuidArgumentCaptor.capture());   // argument captor will sit on the mock and listen everything that's passed in
+
+        assertThat(beer.getId()).isEqualTo(uuidArgumentCaptor.getValue());  // getting value that was passed in and running assertions
     }
 
     @Test
