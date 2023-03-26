@@ -1,6 +1,6 @@
 package com.laurakovacic.spring6restmvc.controller;
 
-import com.laurakovacic.spring6restmvc.model.Beer;
+import com.laurakovacic.spring6restmvc.model.BeerDTO;
 import com.laurakovacic.spring6restmvc.services.BeerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +21,7 @@ public class BeerController {
     private final BeerService beerService;
 
     @PatchMapping(BEER_PATH_ID)
-    public ResponseEntity updateBeerPatchById(@PathVariable("beerId") UUID beerId, @RequestBody Beer beer){
+    public ResponseEntity updateBeerPatchById(@PathVariable("beerId") UUID beerId, @RequestBody BeerDTO beer){
 
         beerService.patchBeerById(beerId, beer);
 
@@ -29,9 +29,11 @@ public class BeerController {
     }
 
     @PutMapping(BEER_PATH_ID)
-    public ResponseEntity updateById(@PathVariable("beerId") UUID beerId, @RequestBody Beer beer){
+    public ResponseEntity updateById(@PathVariable("beerId") UUID beerId, @RequestBody BeerDTO beer){
 
-        beerService.updateBeerById(beerId, beer);
+        if(beerService.updateBeerById(beerId, beer).isEmpty()) {
+            throw new NotFoundException();
+        }
 
         return new ResponseEntity(HttpStatus.NO_CONTENT);   // meaning request is received and everything happened normally
     }
@@ -39,30 +41,32 @@ public class BeerController {
     @DeleteMapping(BEER_PATH_ID)
     public ResponseEntity deleteById(@PathVariable("beerId") UUID beerId){
 
-        beerService.deleteBeerById(beerId);
+        if (!beerService.deleteBeerById(beerId)) {
+            throw new NotFoundException();
+        }
 
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
     @PostMapping(BEER_PATH)
 //    @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity handlePost(@RequestBody Beer beer) {  // @RequestBody tells Spring to bind JSON body to Beer object
+    public ResponseEntity handlePost(@RequestBody BeerDTO beer) {  // @RequestBody tells Spring to bind JSON body to Beer object
 
-        Beer savedBeer = beerService.saveNewBeer(beer);   // mimicking persistence operation
+        BeerDTO savedBeer = beerService.saveNewBeer(beer);   // mimicking persistence operation
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Location", "api/v1/beer/" + savedBeer.getId().toString());
+        headers.add("Location", BEER_PATH + "/" + savedBeer.getId().toString());
 
         return new ResponseEntity(headers, HttpStatus.CREATED);
     }
 
     @GetMapping(value = BEER_PATH)     // limiting to work with GET method only
-    public List<Beer> listBeers() {        // view handler is Jackson which will produce JSON response
+    public List<BeerDTO> listBeers() {        // view handler is Jackson which will produce JSON response
         return beerService.listBeers();
     }
 
     @GetMapping(value = BEER_PATH_ID)
-    public Beer getBeerById(@PathVariable("beerId") UUID beerId) {
+    public BeerDTO getBeerById(@PathVariable("beerId") UUID beerId) {
 
         log.debug("Get Beer by Id - in controller");
 
