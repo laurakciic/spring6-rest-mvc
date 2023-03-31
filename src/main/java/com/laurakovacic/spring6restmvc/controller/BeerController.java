@@ -64,8 +64,9 @@ public class BeerController {
 
     @GetMapping(value = BEER_PATH) // limiting to work with GET method only
     public List<BeerDTO> listBeers(@RequestParam(required = false) String beerName,
-                                   @RequestParam(required = false) BeerStyle beerStyle) { // view handler is Jackson which will produce JSON response
-        return beerService.listBeers(beerName, beerStyle);
+                                   @RequestParam(required = false) BeerStyle beerStyle,
+                                   @RequestParam(required = false) Boolean showInventory) { // view handler is Jackson which will produce JSON response
+        return beerService.listBeers(beerName, beerStyle, showInventory);
     }
 
     @GetMapping(value = BEER_PATH_ID)
