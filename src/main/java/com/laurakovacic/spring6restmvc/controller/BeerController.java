@@ -1,6 +1,7 @@
 package com.laurakovacic.spring6restmvc.controller;
 
 import com.laurakovacic.spring6restmvc.model.BeerDTO;
+import com.laurakovacic.spring6restmvc.model.BeerStyle;
 import com.laurakovacic.spring6restmvc.services.BeerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -62,8 +63,9 @@ public class BeerController {
     }
 
     @GetMapping(value = BEER_PATH) // limiting to work with GET method only
-    public List<BeerDTO> listBeers(@RequestParam(required = false) String beerName) { // view handler is Jackson which will produce JSON response
-        return beerService.listBeers(beerName);
+    public List<BeerDTO> listBeers(@RequestParam(required = false) String beerName,
+                                   @RequestParam(required = false) BeerStyle beerStyle) { // view handler is Jackson which will produce JSON response
+        return beerService.listBeers(beerName, beerStyle);
     }
 
     @GetMapping(value = BEER_PATH_ID)
