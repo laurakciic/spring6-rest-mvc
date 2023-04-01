@@ -30,7 +30,6 @@ public class Customer {
     private String email;
     private LocalDate createdDate;
     private LocalDate lastModifiedDate;
-
     @OneToMany(mappedBy = "customer")
-    Set<BeerOrder> beerOrders;
+    private Set<BeerOrder> beerOrders;
 }
