@@ -7,6 +7,7 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -30,6 +31,7 @@ public class Customer {
     private String email;
     private LocalDate createdDate;
     private LocalDate lastModifiedDate;
+    @Builder.Default // will initialize beerOrders to the empty hash set as well if it's not set
     @OneToMany(mappedBy = "customer")
-    private Set<BeerOrder> beerOrders;
+    private Set<BeerOrder> beerOrders = new HashSet<>();
 }
