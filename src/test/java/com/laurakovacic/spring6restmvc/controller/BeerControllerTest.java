@@ -1,6 +1,7 @@
 package com.laurakovacic.spring6restmvc.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.laurakovacic.spring6restmvc.config.SpringSecurityConfig;
 import com.laurakovacic.spring6restmvc.model.BeerDTO;
 import com.laurakovacic.spring6restmvc.services.BeerService;
 import com.laurakovacic.spring6restmvc.services.BeerServiceImpl;
@@ -11,6 +12,7 @@ import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -32,6 +34,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(BeerController.class)     // indicating a test splice
+@Import(SpringSecurityConfig.class)   // must import bc of test splice usage
 class BeerControllerTest {
 
     @Autowired
@@ -57,13 +60,14 @@ class BeerControllerTest {
     }
 
     @Test
-    void createBeerBlankName() throws Exception {
+    void createBeerNullName() throws Exception {
         BeerDTO dto = BeerDTO.builder().build();
 
         given(beerService.saveNewBeer(any(BeerDTO.class)))
                 .willReturn(beerServiceImpl.listBeers(null, null, false, 1, 25).getContent().get(1));
 
         MvcResult mvcResult = mockMvc.perform(post(BEER_PATH)
+                .with(httpBasic("user1", "password"))
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(dto)))
